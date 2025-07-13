@@ -25,16 +25,20 @@ connectDB()
 const server = express()
 
 // Permitir conexiones
-const corsOptions : CorsOptions = {
-    origin: function(origin, callback) {
-        if(origin === process.env.FRONTEND_URL, process.env.API_URL){
-            callback(null, true)
-        }
-        else {
-            callback(new Error('Error de CORS'))
-        }
+const corsOptions: CorsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      process.env.FRONTEND_URL, // Desarrollo local
+      process.env.API_URL, // Documentación local
+    ].filter(Boolean); // Elimina valores undefined o vacíos
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Error de CORS"));
     }
-}
+  },
+};
 
 server.use(cors(corsOptions))
 
